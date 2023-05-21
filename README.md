@@ -1,5 +1,5 @@
 # Проект: Mesto (Место)
-*[Ссылка проект](https://AnastasiiaKunstman.github.io/mesto-react)
+*[Ссылка проект](https://AnastasiiaKunstman.github.io/react-mesto-auth/)
 
 ![Путешествие по России](./src/images/mesto.png)
 
