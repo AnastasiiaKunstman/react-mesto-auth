@@ -14,3 +14,7 @@
     border: none;
     border-radius: 2px;
 }
+
+.auth__button-submit:hover {
+    opacity: 0.85;
+}

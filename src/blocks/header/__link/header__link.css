@@ -5,3 +5,7 @@
     color: #FFFF;
     cursor: pointer;
 }
+
+.header__link:hover {
+    opacity: 0.6;
+}
