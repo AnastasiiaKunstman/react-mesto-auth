@@ -13,71 +13,73 @@ class Api {
         }
     };
 
+    _request(url, options) {
+        return fetch(url, options).then((res) => this._checkResponse(res));
+    };
+
 
     //Информация о пользователе
     getUserInfo() {
-        return fetch(`${this._baseUrl}/users/me`, {
-            method: 'GET',
+        return this._request(`${this._baseUrl}/users/me`, {
             headers: this._headers
-        }).then(this._checkResponse)
+        })
     };
 
     //Картинки с сервера
     getInitialCards() {
-        return fetch(`${this._baseUrl}/cards`, {
-            method: 'GET',
+        return this._request(`${this._baseUrl}/cards`, {
             headers: this._headers,
-        }).then(this._checkResponse)
+        })
     };
 
 
     //Редактирование информации о пользователе
     changeUserInfo(name, about) {
-        return fetch(`${this._baseUrl}/users/me`, {
+        return this._request(`${this._baseUrl}/users/me`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
                 name: name,
                 about: about,
             }),
-        }).then(this._checkResponse)
+        })
     };
 
 
     //Создать новую карточку
     addNewCard(data) {
-        return fetch(`${this._baseUrl}/cards`, {
+        return this._request(`${this._baseUrl}/cards`, {
             method: 'POST',
             headers: this._headers,
             body: JSON.stringify(data)
-        }).then(this._checkResponse)
+        })
     };
 
     //Изменение аватара
     changeAvatar(avatar) {
-        return fetch(`${this._baseUrl}/users/me/avatar`, {
+        return this._request(`${this._baseUrl}/users/me/avatar`, {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
                 avatar: avatar
             }),
-        }).then(this._checkResponse)
+        })
     };
 
     //Удаление карточки
     deleteCard(cardId) {
-        return fetch(`${this._baseUrl}/cards/${cardId}`, {
+        return this._request(`${this._baseUrl}/cards/${cardId}`, {
             method: 'DELETE',
             headers: this._headers,
-        }).then(this._checkResponse)
+        })
     };
 
     //Лайк
     changeLikeCardStatus(cardId, isLiked) {
-        return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-          method: isLiked ? 'PUT' : 'DELETE',
-          headers: this._headers,
-        }).then(this._checkResponse)
+        return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
+            method: isLiked ? 'PUT' : 'DELETE',
+            headers: this._headers,
+        })
     };
 };
 

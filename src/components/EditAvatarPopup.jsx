@@ -12,7 +12,6 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, onLoading }) {
     function handleSubmit(evt) {
         // Запрещаем браузеру переходить по адресу формы
         evt.preventDefault();
-
         // Передаём значения управляемых компонентов во внешний обработчик
         onUpdateAvatar({
             avatar: avatarRef.current.value

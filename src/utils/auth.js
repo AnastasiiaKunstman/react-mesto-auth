@@ -1,7 +1,8 @@
 class Auth {
-    constructor(baseUrl) {
-        this._baseUrl = baseUrl
-    }
+    constructor(config) {
+        this._baseUrl = config.baseUrl;
+        this._headers = config.headers;
+    };
 
     _checkResponse(res) {
         if (res.ok) {
@@ -11,42 +12,48 @@ class Auth {
         }
     };
 
+    _request(url, options) {
+        return fetch(url, options).then(this._checkResponse)
+    };
+
 
     //регистрация
     register(email, password) {
-        return fetch(`${this._baseUrl}/signup`, {
+        return this._request(`${this._baseUrl}/signup`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: this._headers,
             body: JSON.stringify({ email, password }),
-        }).then(this._checkResponse)
+        })
     };
 
 
     //вход
     login(email, password) {
-        return fetch(`${this._baseUrl}/signin`, {
+        return this._request(`${this._baseUrl}/signin`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: this._headers,
             body: JSON.stringify({ email, password }),
-        }).then(this._checkResponse)
+        })
     };
 
 
     //проверка токена
     checkToken(token) {
-        return fetch(`${this._baseUrl}/users/me`, {
+        return this._request(`${this._baseUrl}/users/me`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-        }).then(this._checkResponse)
+        })
     };
 };
 
-const auth = new Auth('https://auth.nomoreparties.co');
+const auth = new Auth({
+    baseUrl: "https://auth.nomoreparties.co",
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
+
 export default auth;

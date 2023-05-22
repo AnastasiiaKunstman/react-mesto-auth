@@ -84,30 +84,6 @@ function App() {
     setSelectedCard(null)
   };
 
-  //закрытие попапов по Esc
-  const isOpen =
-    isEditAvatarPopupOpen ||
-    isEditProfilePopupOpen ||
-    isAddPlacePopupOpen ||
-    isInfoTooltipPopupOpen ||
-    selectedCard;
-
-  useEffect(() => {
-    function closeByEscape(evt) {
-      if (evt.key === "Escape") {
-        closeAllPopups();
-      }
-    }
-    if (isOpen) {
-      // навешиваем только при открытии
-      document.addEventListener("keydown", closeByEscape);
-      return () => {
-        document.removeEventListener("keydown", closeByEscape);
-      };
-    }
-  }, [isOpen]);
-
-
   //Редактировать информацию о пользователе
   function handleUpdateUser(userData) {
     setIsLoading(true);
@@ -116,7 +92,7 @@ function App() {
         setCurrentUser(userData);
         closeAllPopups();
       })
-      .catch((err) => console.log(err))
+      .catch(console.error)
       .finally(() => setIsLoading(false));
   };
 
@@ -128,7 +104,7 @@ function App() {
         setCurrentUser(userData);
         closeAllPopups();
       })
-      .catch((err) => console.log(err))
+      .catch(console.error)
       .finally(() => setIsLoading(false));
   };
 
@@ -163,7 +139,7 @@ function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => console.log(err))
+      .catch(console.error)
       .finally(() => setIsLoading(false));
   };
 
@@ -174,16 +150,15 @@ function App() {
       .then((res) => {
         if (res) {
           setLoggedIn(true);
-          setIsInfoTooltipPopupOpen(true);
           setEmail(email);
           navigate('/sign-in', { replace: true });
         }
       })
-      .catch((err) => {
+      .catch(console.error)
+      .finally(() => {
+        setIsLoading(false);
         setIsInfoTooltipPopupOpen(true);
-        console.log(err);
       })
-      .finally(() => setIsLoading(false))
   };
 
   //Вход
@@ -219,7 +194,7 @@ function App() {
             navigate('/', { replace: true });
           }
         })
-        .catch((err) => console.log(err));
+        .catch(console.error);
     } else {
       setIsLoading(false);
     }
@@ -237,101 +212,101 @@ function App() {
   };
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div>
-        <Header email={email} onSignOut={onSignOut} />
+      <CurrentUserContext.Provider value={currentUser}>
+        <div>
+          <Header email={email} onSignOut={onSignOut} />
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute path="/" loggedIn={loggedIn}>
-                <Main
-                  element={Main}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute path="/" loggedIn={loggedIn}>
+                  <Main
+                    element={Main}
+                    loggedIn={loggedIn}
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleDelCardClick}
+                  />
+                  <Footer />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/sign-in"
+              element={
+                <Login
                   loggedIn={loggedIn}
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  cards={cards}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleDelCardClick}
+                  onLogin={onLogin}
+                  tokenCheck={tokenCheck}
+                  isLoading={isLoading}
                 />
-                <Footer />
-              </ProtectedRoute>
-            }
+              }
+            />
+
+            <Route
+              path="/sign-up"
+              element={
+                <Register
+                  loggedIn={loggedIn}
+                  onRegister={onRegister}
+                  isLoading={isLoading}
+                />
+              }
+            />
+
+            <Route
+              path="*"
+              element={
+                loggedIn ? <Navigate to="/" /> : <Navigate to="./sign-up" />
+              }
+            />
+          </Routes>
+
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+            onLoading={isLoading}
           />
 
-          <Route
-            path="/sign-in"
-            element={
-              <Login
-                loggedIn={loggedIn}
-                onLogin={onLogin}
-                tokenCheck={tokenCheck}
-                isLoading={isLoading}
-              />
-            }
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+            onLoading={isLoading}
           />
 
-          <Route
-            path="/sign-up"
-            element={
-              <Register
-                loggedIn={loggedIn}
-                onRegister={onRegister}
-                isLoading={isLoading}
-              />
-            }
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlaceSubmit={handleAddPlaceSubmit}
+            onLoading={isLoading}
           />
 
-          <Route
-            path="*"
-            element={
-              loggedIn ? <Navigate to="/" /> : <Navigate to="./sign-up" />
-            }
+          <DelCardPopup
+            isOpen={isDelCardPopupOpen}
+            onClose={closeAllPopups}
+            card={deletedCard}
+            onDelCard={handleCardDelete}
           />
-        </Routes>
 
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-          onLoading={isLoading}
-        />
+          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-          onLoading={isLoading}
-        />
+          <InfoTooltip
+            isOpen={isInfoTooltipPopupOpen}
+            onClose={closeAllPopups}
+            isSuccess={isSuccess}
+          />
 
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlaceSubmit={handleAddPlaceSubmit}
-          onLoading={isLoading}
-        />
+        </div>
 
-        <DelCardPopup
-          isOpen={isDelCardPopupOpen}
-          onClose={closeAllPopups}
-          card={deletedCard}
-          onDelCard={handleCardDelete}
-        />
-
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-        <InfoTooltip
-          isOpen={isInfoTooltipPopupOpen}
-          onClose={closeAllPopups}
-          isSuccess={isSuccess}
-        />
-
-      </div>
-
-    </CurrentUserContext.Provider>
+      </CurrentUserContext.Provider>
   );
 };
 

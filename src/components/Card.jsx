@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Card({ card, onCardClick, onCardLike, onCardDelete, onDelCardPopup }) {
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     // Подписка на контекст
     const currentUser = useContext(CurrentUserContext);
     // Определяем, являемся ли мы владельцем текущей карточки
@@ -28,7 +28,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete, onDelCardPopup }) {
     };
 
     return (
-        <CurrentUserContext.Provider value={currentUser}>
             <div className="element">
                 {isOwn && (<button type="button" className="element__del" aria-label="Удалить" onClick={handleDeleteClick} />)}
                 <button type="button" className="element__button-image" aria-label="Увеличить картинку">
@@ -41,7 +40,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete, onDelCardPopup }) {
                     </button>
                 </div>
             </div>
-        </CurrentUserContext.Provider>
     )
 };
 

@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useForm } from '../hooks/useForm';
 
 function Register({ onRegister, loggedIn, isLoading }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    //изменение инпутов
-    function handleChangeEmail(evt) {
-        setEmail(evt.target.value);
-    };
-    function handleChangePassword(evt) {
-        setPassword(evt.target.value);
-    };
+    const {values, handleChange, setValues} = useForm({});
 
     //отправка формы
     function handleSubmit(evt) {
         evt.preventDefault();
-        onRegister(email, password);
+        onRegister(values.email, values.password);
     };
 
     return (
@@ -30,8 +22,8 @@ function Register({ onRegister, loggedIn, isLoading }) {
                             name="email"
                             type="email"
                             placeholder="Email"
-                            value={email}
-                            onChange={handleChangeEmail}
+                            value={values.email || ''}
+                            onChange={handleChange}
                             required
                         />
                         <span className="auth__input-error" />
@@ -41,10 +33,10 @@ function Register({ onRegister, loggedIn, isLoading }) {
                             name="password"
                             type="password"
                             placeholder="Пароль"
-                            value={password}
+                            value={values.password || ''}
                             minLength="4"
                             maxLength="15"
-                            onChange={handleChangePassword}
+                            onChange={handleChange}
                             required
                         />
                         <span className="auth__input-error" />

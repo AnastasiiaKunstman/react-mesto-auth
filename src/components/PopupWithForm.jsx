@@ -1,16 +1,11 @@
 import React from 'react';
+import { usePopupClose } from "../hooks/usePopupClose";
 
 function PopupWithForm({ isOpen, onClose, name, title, children, buttonText, onSubmit }) {
-
-    //Закрытие по оверлею
-    function handleClickClose(evt) {
-        if (evt.target.classList.contains('popup_opened')) {
-            onClose();
-        }
-    };
+    usePopupClose(isOpen, onClose);
 
     return (
-        <div className={`popup ${name}-popup} ${isOpen ? `popup_opened` : ""}`} onClick={handleClickClose}>
+        <div className={`popup ${name}-popup} ${isOpen ? `popup_opened` : ""}`}>
             <div className="popup__container">
                 <h2 className="popup__title">{title}</h2>
                 <button type="button" className="popup__close" onClick={onClose} aria-label="Зыкрыть форму" />

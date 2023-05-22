@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm } from '../hooks/useForm';
 
 function Login({ onLogin, isLoading, loggedIn }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    //изменение инпутов
-    function handleChangeEmail(evt) {
-        setEmail(evt.target.value);
-    };
-    function handleChangePassword(evt) {
-        setPassword(evt.target.value);
-    };
+    const {values, handleChange, setValues} = useForm({});
 
     //отправка формы
     function handleSubmit(evt) {
         evt.preventDefault();
-        onLogin(email, password);
+        onLogin(values.email, values.password);
     };
 
     return (
@@ -28,9 +20,9 @@ function Login({ onLogin, isLoading, loggedIn }) {
                         className="auth__input auth__input_type_email"
                         name="email"
                         type="email"
-                        value={email}
+                        value={values.email || ''}
                         placeholder="Email"
-                        onChange={handleChangeEmail}
+                        onChange={handleChange}
                         required
                     />
                     <span className="auth__input-error" />
@@ -39,11 +31,11 @@ function Login({ onLogin, isLoading, loggedIn }) {
                         className="auth__input auth__input_type_password"
                         type="password"
                         name="password"
-                        value={password}
+                        value={values.password || ''}
                         placeholder="Пароль"
                         minLength="4"
                         maxLength="15"
-                        onChange={handleChangePassword}
+                        onChange={handleChange}
                         required
                     />
                     <span className="auth__input-error" />

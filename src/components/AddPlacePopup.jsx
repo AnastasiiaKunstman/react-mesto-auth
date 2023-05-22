@@ -1,29 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
+import { useForm } from '../hooks/useForm';
 
 function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit, onLoading }) {
-    const [name, setName] = useState('');
-    const [link, setLink] = useState('');
+    const {values, handleChange, setValues} = useForm({});
 
     useEffect(() => {
-        setName('');
-        setLink('');
+       setValues({});
     }, [isOpen]);
-
-    function handleChangeName(evt) {
-        setName(evt.target.value)
-    };
-
-    function handleChangeLink(evt) {
-        setLink(evt.target.value);
-    };
 
     function handleSubmit(evt) {
         // Запрещаем браузеру переходить по адресу формы
         evt.preventDefault();
-
         // Передаём значения управляемых компонентов во внешний обработчик
-        onAddPlaceSubmit({ name, link });
+        onAddPlaceSubmit({name: values.name, link: values.link});
     };
 
     return (
@@ -44,8 +34,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit, onLoading }) {
                 name="name"
                 className="popup__input popup__input_card_name"
                 placeholder="Название"
-                value={name}
-                onChange={handleChangeName}
+                value={values.name || ''}
+                onChange={handleChange}
             />
             <span id="input-name-error" className="popup__input-error" />
             <input
@@ -55,8 +45,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlaceSubmit, onLoading }) {
                 name="link"
                 className="popup__input popup__input_card_link"
                 placeholder="Ссылка на картинку"
-                value={link}
-                onChange={handleChangeLink}
+                value={values.link || ''}
+                onChange={handleChange}
             />
             <span id="input-link-error" className="popup__input-error" />
         </PopupWithForm>
